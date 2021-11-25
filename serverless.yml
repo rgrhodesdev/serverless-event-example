@@ -1,0 +1,44 @@
+service: ec2-event-example
+
+frameworkVersion: '2'
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: eu-west-1
+  lambdaHashingVersion: '20201221'
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+       - s3:PutObject
+       - s3:ListObject
+      Resource: !Join
+        - ''
+        - - !GetAtt
+            - S3BucketSLS01
+            - Arn
+          - /*
+
+functions:
+  ec2-event-example:
+    handler: handler.main
+    events:
+      - cloudwatchEvent:
+         event:
+           source:
+             - "aws.ec2"
+           detail-type:
+             - "EC2 Instance State-change Notification"
+           detail:
+             state:
+               - stopped
+
+resources:
+  Resources:
+    S3BucketSLS01:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: servlessbucket20211125a
+
+
