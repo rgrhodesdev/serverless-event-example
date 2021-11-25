@@ -24,21 +24,28 @@ functions:
   ec2-event-example:
     handler: handler.main
     events:
-      - cloudwatchEvent:
-         event:
-           source:
+      - eventBridge:
+          pattern:
+            source:
              - "aws.ec2"
-           detail-type:
+            detail-type:
              - "EC2 Instance State-change Notification"
-           detail:
-             state:
+            detail:
+              state:
                - stopped
+      - eventBridge:
+          pattern:
+            source:
+             - "aws.ec2"
+            detail-type:
+             - "EC2 Instance State-change Notification"
+            detail:
+              state:
+               - running
 
 resources:
   Resources:
     S3BucketSLS01:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: servlessbucket20211125a
-
-
+        BucketName: servlessbucket20211125b

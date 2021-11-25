@@ -14,11 +14,12 @@ def main(event, context):
     try:
 
         instancename = event['detail']['instance-id']
-        keyname = timenow() + instancename
+        instancestate = event['detail']['state']
+        keyname = timenow() + instancename + "_" + instancestate
         
         s3ClientResponse = client.put_object(
-            Body=instancename + " stopped",
-            Bucket="servlessbucket20211125a",
+            Body=instancename + "_" + instancestate,
+            Bucket="servlessbucket20211125b",
 
             Key=keyname,
         )
