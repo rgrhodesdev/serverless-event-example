@@ -1,51 +1,108 @@
-service: ec2-event-example
+service: serverless-event-example
 
 frameworkVersion: '2'
-
 
 provider:
   name: aws
   runtime: python3.8
   region: eu-west-1
   lambdaHashingVersion: '20201221'
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-       - s3:PutObject
-       - s3:ListObject
-      Resource: !Join
-        - ''
-        - - !GetAtt
-            - S3BucketSLS01
-            - Arn
-          - /*
 
 functions:
-  ec2-event-example:
-    handler: handler.main
+  producer-event:
+    role: producerrole
+    handler: producer.main
+  consumer-event:
+    role: consumerrole
+    handler: consumer.main
     events:
       - eventBridge:
           pattern:
             source:
-             - "aws.ec2"
+             - "producer"
             detail-type:
-             - "EC2 Instance State-change Notification"
+             - "web action"
             detail:
               state:
-               - stopped
+               - Success
       - eventBridge:
           pattern:
             source:
-             - "aws.ec2"
+             - "producer"
             detail-type:
-             - "EC2 Instance State-change Notification"
+             - "web action"
             detail:
               state:
-               - running
+               - Failed
 
 resources:
   Resources:
+    producerrole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ProducerRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: EventBridgePutEvent
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                  - events:PutEvents
+                  Resource: "*"
+    consumerrole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ConsumerRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: consumers3access
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                  - s3:PutObject
+                  - s3:ListObject
+                  Resource: !Join
+                    - ''
+                    - - !GetAtt
+                        - S3BucketSLS01
+                        - Arn
+                      - /*
+          - PolicyName: consumerssmaccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'ssm:GetParameter'
+                    - 'ssm:PutParameter'
+                  Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/bucketname'
     S3BucketSLS01:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: servlessbucket20211125b
+        BucketName: ${opt:bucketname}
+    BucketNameParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: bucketname
+        Type: String
+        Value: ${opt:bucketname}
+        Description: Bucket for consumer output.
+        
