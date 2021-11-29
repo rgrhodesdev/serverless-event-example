@@ -23,6 +23,8 @@ functions:
             detail-type:
              - "web action"
             detail:
+              action:
+               - AddToBasket
               state:
                - Success
       - eventBridge:
@@ -32,6 +34,8 @@ functions:
             detail-type:
              - "web action"
             detail:
+              action:
+               - AddToBasket
               state:
                - Failed
 

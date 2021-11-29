@@ -1,100 +1,55 @@
-<!--
-title: 'AWS Python Example'
-description: 'This template demonstrates how to deploy a Python function running on AWS Lambda using the traditional Serverless Framework.'
-layout: Doc
-framework: v2
-platform: AWS
-language: python
-priority: 2
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+Create a service to produce, route and consume an AddToBasket event in AWS. Defined and deployed using the Serverless Framework using serverless technologies and event driven architecture.
 
+Pre Requisites
 
-# Serverless Framework AWS Python Example
+Before you can deploy the service you will need the following configured in your development environment:
 
-This template demonstrates how to deploy a Python function running on AWS Lambda using the traditional Serverless Framework. The deployed function does not include any event definitions as well as any kind of persistence (database). For more advanced configurations check out the [examples repo](https://github.com/serverless/examples/) which includes integrations with SQS, DynamoDB or examples of functions that are triggered in `cron`-like manner. For details about configuration of specific `events`, please refer to our [documentation](https://www.serverless.com/framework/docs/providers/aws/events/).
+An active AWS account (Free tier if possible, though any costs will be minimal)
+An IAM User with Administrative programmatic access
+AWS CLI installed
+Git installed
+Serverless Framework installed
 
-## Usage
+If you do need to get this setup please refer to the links below to get you started:
 
-### Deployment
+AWS Account - https://aws.amazon.com
+AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+AWS Programmatic Access - https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys
+Git - https://git-scm.com/
+Serverless Framework - https://github.com/serverless/serverless
 
-In order to deploy the example, you need to run the following command:
+---------------------------------------------------------------------------------------------------------------------
 
-```
-$ serverless deploy
-```
+The service can be installed to your environment directly from the github repo using the command below:
 
-After running deploy, you should see output similar to:
+serverless install --url https://github.com/rgrhodesdev/serverless-event-example
 
-```bash
-Serverless: Packaging service...
-Serverless: Excluding development dependencies...
-Serverless: Creating Stack...
-Serverless: Checking Stack create progress...
-........
-Serverless: Stack create finished...
-Serverless: Uploading CloudFormation file to S3...
-Serverless: Uploading artifacts...
-Serverless: Uploading service aws-python.zip file to S3 (711.23 KB)...
-Serverless: Validating template...
-Serverless: Updating Stack...
-Serverless: Checking Stack update progress...
-.................................
-Serverless: Stack update finished...
-Service Information
-service: aws-python
-stage: dev
-region: us-east-1
-stack: aws-python-dev
-resources: 6
-functions:
-  api: aws-python-dev-hello
-layers:
-  None
-```
+In your terminal cd to the serverless-event-example folder (if required)
 
-### Invocation
+To deploy the service run the following command:
 
-After successful deployment, you can invoke the deployed function by using the following command:
+serverless deploy --bucketname <outputbucket>
 
-```bash
-serverless invoke --function hello
-```
+The <outputbucket> parameter must be specified and on the command line, and will be the name of the s3 bucket created in your AWS account as part of the service deployment.
 
-Which should result in response similar to the following:
+When successfully deployed to your AWS account the service consists of the following event driven, serverless infrastructure:
 
-```json
-{
-    "statusCode": 200,
-    "body": "{\"message\": \"Go Serverless v2.0! Your function executed successfully!\", \"input\": {}}"
-}
-```
+- A Lambda function, acting as an event producer that when invoked creates a custom AddToBasket event 
+- Two Event Bridge rules to route events based on the action and state (Success or Failed) of the event.
+- A second lambda function, acting as an event consumer that will output a time stamped key to S3, based on the action and state of the event.
 
-### Local development
+In addition the following serverless AWS infrastructure is deployed to support service execution:
 
-You can invoke your function locally by using the following command:
+- S3 Bucket - Where the event consumer output is written
+- Parameter Store - Consumer output bucket name is written to a parameter during deployment. This value is read by the Event Consumer.
 
-```bash
-serverless invoke local --function hello
-```
+All infrastructure is defined in the serverless.yml file. The format and statements are based on standard AWS Cloudformation template (yaml) syntax.
 
-Which should result in response similar to the following:
+Code for the Event Producer and Event Consumer Lambda functions are written in python.
 
-```
-{
-    "statusCode": 200,
-    "body": "{\"message\": \"Go Serverless v2.0! Your function executed successfully!\", \"input\": {}}"
-}
-```
+- producer.py
+- consumer.py
 
-### Bundling dependencies
+To delete any provisioned infrastructure, delete any files created in the <outputbucket> and run the following command
 
-In case you would like to include third-party dependencies, you will need to use a plugin called `serverless-python-requirements`. You can set it up by running the following command:
-
-```bash
-serverless plugin install -n serverless-python-requirements
-```
-
-Running the above will automatically add `serverless-python-requirements` to `plugins` section in your `serverless.yml` file and add it as a `devDependency` to `package.json` file. The `package.json` file will be automatically created if it doesn't exist beforehand. Now you will be able to add your dependencies to `requirements.txt` file (`Pipfile` and `pyproject.toml` is also supported but requires additional configuration) and they will be automatically injected to Lambda package during build process. For more details about the plugin's configuration, please refer to [official documentation](https://github.com/UnitedIncome/serverless-python-requirements).
+serverless remove
