@@ -1,6 +1,8 @@
+**Introduction**
+
 Create a service to produce, route and consume an AddToBasket event in AWS. Defined and deployed using the Serverless Framework using serverless technologies and event driven architecture.
 
-Pre Requisites
+**Pre Requisites**
 
 Before you can deploy the service you will need the following configured in your development environment:
 
@@ -12,13 +14,13 @@ Serverless Framework installed
 
 If you do need to get this setup please refer to the links below to get you started:
 
-AWS Account - https://aws.amazon.com
-AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-AWS Programmatic Access - https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys
-Git - https://git-scm.com/
-Serverless Framework - https://github.com/serverless/serverless
+- AWS Account - https://aws.amazon.com <br\>
+- AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+- AWS Programmatic Access - https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys
+- Git - https://git-scm.com/
+- Serverless Framework - https://github.com/serverless/serverless
 
----------------------------------------------------------------------------------------------------------------------
+**Implementation**
 
 The service can be installed to your environment directly from the github repo using the command below:
 
