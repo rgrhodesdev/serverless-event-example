@@ -14,7 +14,7 @@ Serverless Framework installed
 
 If you do need to get this setup please refer to the links below to get you started:
 
-- AWS Account - https://aws.amazon.com <br\>
+- AWS Account - https://aws.amazon.com
 - AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 - AWS Programmatic Access - https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys
 - Git - https://git-scm.com/
