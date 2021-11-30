@@ -30,9 +30,9 @@ In your terminal cd to the serverless-event-example folder (if required)
 
 To deploy the service run the following command:
 
-serverless deploy --bucketname <outputbucket>
+serverless deploy --bucketname [outputbucket]
 
-The <outputbucket> parameter must be specified and on the command line, and will be the name of the s3 bucket created in your AWS account as part of the service deployment.
+The [outputbucket] parameter must be specified and on the command line, and will be the name of the s3 bucket created in your AWS account as part of the service deployment.
 
 When successfully deployed to your AWS account the service consists of the following event driven, serverless infrastructure:
 
@@ -52,6 +52,6 @@ Code for the Event Producer and Event Consumer Lambda functions are written in p
 - producer.py
 - consumer.py
 
-To delete any provisioned infrastructure, delete any files created in the <outputbucket> and run the following command
+To delete any provisioned infrastructure, delete any files created in the [outputbucket] and run the following command
 
 serverless remove
