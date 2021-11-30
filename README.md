@@ -60,6 +60,8 @@ serverless invoke --function producer-event
 
 On Successful invocation a new key will be added to the S3 bucket you specified when deploying the service from the command line
 
+**Remove Deployed Infrastructure**
+
 To delete any provisioned infrastructure, delete any files created in the [outputbucket] and run the following command
 
 serverless remove
