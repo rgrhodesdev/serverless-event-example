@@ -52,6 +52,14 @@ Code for the Event Producer and Event Consumer Lambda functions are written in p
 - producer.py
 - consumer.py
 
+**Invoke the Event Producer**
+
+Using the serverless command invoke we can execute the event producer lambda function from the command line as follows:
+
+serverless invoke --function producer-event
+
+On Successful invocation a new key will be added to the S3 bucket you specified when deploying the service from the command line
+
 To delete any provisioned infrastructure, delete any files created in the [outputbucket] and run the following command
 
 serverless remove
